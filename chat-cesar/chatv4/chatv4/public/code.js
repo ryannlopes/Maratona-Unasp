@@ -1,0 +1,196 @@
+(function(){
+    const app = document.querySelector(".app")
+    const btn = document.querySelector("#descriptBtn")
+    const socket = io()
+
+    let uname;
+
+    document.querySelector(".container #join-user").addEventListener("click",function(){
+        let username = document.querySelector("#username").value
+        if(username.length == 0){
+            return;
+        }
+        socket.emit("newuser", username);
+        uname = username;
+        document.querySelector(".join-screen").classList.remove("active")
+        document.querySelector(".app").classList.add("active")
+        document.querySelector(".chat-screen").classList.add("active")
+        key = document.querySelector("#key").value
+        console.log(key)
+    })
+   document.addEventListener("keydown",(event) => {
+            if (event.key === "Enter") {
+
+                let username = document.querySelector(".join-screen #username").value;
+                if (username.length == 0) {
+                    return;
+                }
+                socket.emit("newuser", username);
+                uname = username;
+                document.querySelector(".join-screen").classList.remove("active");
+                document.querySelector(".app").classList.add("active")
+                document.querySelector(".chat-screen").classList.add("active");
+                key = document.querySelector("#key").value
+
+            }
+        })
+
+
+    app.querySelector(".chat-screen #send-message").addEventListener("click", function(){
+        let message = app.querySelector(".chat-screen #message-input").value;
+        if(message.length == 0){
+            return;
+        }
+        renderMessage("my",{
+            username:uname,
+            text:message
+        });
+        socket.emit("chat",{
+            username:uname,
+            text:message
+        });
+
+        app.querySelector(".chat-screen #message-input").value = "";
+
+    })
+  document.addEventListener("keydown", function(event){
+    if (event.key === "Enter"){
+
+        let message = app.querySelector(".chat-screen #message-input").value;
+        if(message.length == 0){
+            return;
+        }
+        renderMessage("my",{
+            username:uname,
+            text:message
+        });
+        socket.emit("chat",{
+            username:uname,
+            text:message
+        });
+        
+        app.querySelector(".chat-screen #message-input").value = "";
+        
+    }
+    })
+    app.querySelector(".chat-screen #exit-chat").addEventListener("click", function(){
+        socket.emit("exituser",uname)
+        window.location.href = window.location.href;
+    })
+
+    socket.on("update",function(update){
+        renderMessage("update",update)
+    })
+    socket.on("chat",function(message){
+        renderMessage("other",message)
+    })
+
+    function renderMessage(type,message){
+        let messageContainer = app.querySelector(".chat-screen .messages")
+        if(type == 'my'){
+            let el = document.createElement("div");
+            el.setAttribute("class","message my-message")
+            el.innerHTML = `
+                <div>
+                    <div class="name">You</div>
+                    <div class="text">${message.text}</div>
+                </div>
+                `;
+                messageContainer.appendChild(el)
+        }else if (type == "other"){
+            let el = document.createElement("div");
+            el.setAttribute("class","message other-message")
+            el.innerHTML = `
+                <div>
+                    <div class="name">${message.username}</div>
+                    <div class="text">${CriptografarCesar(message.text, key)}</div>
+                </div>
+                `;
+                messageContainer.appendChild(el)
+
+                btn.addEventListener("click", function(){
+                    el.innerHTML = `
+                <div>
+                    <div class="name">${message.username}</div>
+                    <div class="text">${DecryptCaesar(message.text, key)}</div>
+                </div>
+                `;
+                messageContainer.appendChild(el)
+                })
+                
+        }
+        // else if(type == "update"){
+        //     let el = document.createElement("div");
+        //     el.setAttribute("class","entrou")
+        //     el.innerText = message;
+        //         messageContainer.appendChild(el)
+        // }
+        messageContainer.scrollTop = messageContainer.scrollHeight - messageContainer.clientHeight;
+    }
+
+
+
+    function CriptografarCesar(mensagem, deslocamento) {
+        // Converter a mensagem em maiúsculas
+        deslocamento = this.key;
+        mensagem = mensagem.toUpperCase();
+    
+        // Verificar se o deslocamento é válido
+        if (deslocamento < 0 || deslocamento > 25) {
+            throw new Error("O deslocamento deve estar entre 0 e 25");
+        }
+    
+        // Criptografar cada caractere da mensagem
+        let mensagemCriptografada = "";
+        for (let i = 0; i < mensagem.length; i++) {
+            let caractereCriptografado = CriptografarCaractere(mensagem[i], deslocamento);
+            mensagemCriptografada += caractereCriptografado;
+        }
+    
+        // Retornar a mensagem criptografada
+        console.log(mensagemCriptografada)
+        return mensagemCriptografada;
+    }
+    
+    function CriptografarCaractere(caractere, deslocamento) {
+        // Obter o código ASCII do caractere
+        let codigoCaractere = caractere.charCodeAt(0);
+    
+        // Criptografar o código ASCII do caractere
+        let codigoCaractereCriptografado = (codigoCaractere - 65 + deslocamento) % 26 + 65;
+    
+        // Converter o código ASCII criptografado em um caractere e retornar
+        return String.fromCharCode(codigoCaractereCriptografado);
+    }
+
+
+
+    function DecryptCaesar(encryptedText, shift) {
+        // Inicializa a variável para armazenar o texto descriptografado
+        let decryptedText = "";
+      
+        // Percorre a string criptografada e decifra cada caractere
+        for (let i = 0; i < encryptedText.length; i++) {
+          let c = encryptedText[i];
+      
+          // Verifica se o caractere é uma letra maiúscula
+          if (c.match(/[A-Z]/)) {
+            // Calcula o deslocamento com base no número de posições para trás na tabela ASCII
+            let offset = ((c.charCodeAt(0) - 65 - shift + 26) % 26) + 65;
+      
+            // Adiciona o caractere descriptografado ao texto descriptografado
+            decryptedText += String.fromCharCode(offset);
+          } else {
+            // Adiciona caracteres especiais ou espaços em branco ao texto descriptografado sem alterá-los
+            decryptedText += c;
+          }
+        }
+      
+        // Retorna o texto descriptografado
+        console.log(decryptedText)
+        return decryptedText;
+      }
+
+
+
+})();

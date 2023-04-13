@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatCriptografado</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://kit.fontawesome.com/ea86b4540c.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;1,400&display=swap" rel="stylesheet">
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+</head>
+<body>
+
+
+    <div class="screen join-screen active">
+        <div class="container">
+
+            <div class="container-imagem"></div>
+            <div class="form">
+                <h2>Entrar</h2>
+                <div class="form-input">
+                    <div class="form-control">
+                        <input type="value" required="" id="username">
+                        <label>
+                            <span style="transition-delay:0ms">U</span>
+                            <span style="transition-delay:50ms">s</span>
+                            <span style="transition-delay:100ms">e</span>
+                            <span style="transition-delay:150ms">r</span>
+                            <span style="transition-delay:200ms">n</span>
+                            <span style="transition-delay:250ms">a</span>
+                        <span style="transition-delay:300ms">m</span>
+                        <span style="transition-delay:350ms">e</span>
+                    </label>
+                    <input id="key" type="number" placeholder="chave" min="1" max="7">
+                </div>
+            </div>
+            <button id="join-user">
+                <div class="button">
+                    <div class="box">E</div>
+                    <div class="box">N</div>
+                    <div class="box">T</div>
+                    <div class="box">R</div>
+                    <div class="box">A</div>
+                    <div class="box">R</div>
+                </div>
+            </button> 
+        </div>
+        
+    </div>
+    </div>
+    <div class="screen app">
+        
+        <div class="screen chat-screen ">
+            <div class="header">
+                <div class="logo">CHAT CRIPTOGRAFADO</div>
+                <button id="exit-chat" class="exit"><span class="text">Sair</span><span>Thanks</span></button>
+            </div>
+            <div class="messages">
+            </div>
+            <div class="typebox">
+                <button id="descriptBtn"><i class="fa-solid fa-key"></i></button>
+                <input type="text" id="message-input" placeholder="Mensagem..." >
+                <button id="send-message"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="socket.io/socket.io.js"></script>
+    <script src="./code.js"></script>
+    <!-- <script>
+        $(function() {
+            $('input').keyup(function() {
+                this.value = this.value.toLocaleUpperCase();
+            });
+        });
+    </script> -->
+</body>
+</html>
